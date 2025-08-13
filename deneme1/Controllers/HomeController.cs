@@ -18,7 +18,7 @@ namespace deneme1.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Iletisim()
         {
             return View();
         }
