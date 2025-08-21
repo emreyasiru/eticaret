@@ -4,15 +4,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="row">
-    <div class="col-12">
-        <button class="btn btn-primary">Kategori Ekle</button>
-        <button class="btn btn-secondary">Alt Kategori Ekle</button>
+    <div class="col-12 mb-3 ">
+        <button class="btn btn-primary mr-3" data-toggle="modal" data-target="#kategoriekle">Kategori Ekle</button>
+        <button class="btn btn-secondary" data-toggle="modal" data-target="#altkategoriekle">Alt Kategori Ekle</button>
     </div>
 </div>
 <div class="row">
     <div class="col-lg-12">
         <div class="table-responsive table--no-card m-b-30 has-scroll">
-            <table class="table table-borderless table-striped table-earning">
+            <table class="table table-borderless table-striped table-earning arkarenk">
                 <thead>
                     <tr>
                         <th>Üst Kategori</th>
@@ -32,6 +32,61 @@
 
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="kategoriekle" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Kategori Ekleme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Admin" asp-action="Kategoriler" method="post">
+            <div class="modal-body">
+                
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="kategori adı">
+                    <input type="hidden" name="altkategori" value="0"/>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Vazgeç</button>
+                <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="altkategoriekle" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Alt Kategori Ekleme</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="Admin" asp-action="Kategoriler" method="post">
+                <div class="modal-body">
+
+                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kategori Adı">
+                    <label for="exampleFormControlInput1">Ana Kategori Seç</label>
+                    <select class="form-control" name="altkategori">
+                        <option>kategoriler</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Vazgeç</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

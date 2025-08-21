@@ -29,3 +29,8 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.arkarenk thead th {
+    background-color: #4e73df; /* koyu gri/siyah */
+    color: #fff; /* beyaz yazý */
+}
