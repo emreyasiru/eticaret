@@ -23,6 +23,16 @@ namespace eticaret.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult Kategoriler() 
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Giris", "Admin");
+            }
+            return View();
+        }
         [HttpPost]
         public IActionResult Giris(string username, string password)
         {
