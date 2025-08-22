@@ -38,6 +38,7 @@ public partial class EticaretContext : DbContext
             entity.Property(e => e.KategoriAdi)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.UstKategoriId).HasColumnName("UstKategori_id");
         });
 
         modelBuilder.Entity<AnaKategori>(entity =>

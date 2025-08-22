@@ -23,13 +23,30 @@
                     </tr>
                 </thead>
                 <tbody>
-
+                    @foreach(var ktg in Model.AnaKategoriList){
                     <tr>
-                        <td>2025-01-15 14:32</td>
-                        <td>100397</td>
-                        <td>Samsung Galaxy S25 Ultra</td>
-                        <td>PayPal</td>
+                        <td></td>
+                        <td>@ktg.KategoriAdi</td>
+                        
+                        <td></td>
+                        <td> <a asp-action="KategoriDuzenle" asp-controller="Duzenle" asp-route-id="@ktg.Id" class="btn btn-warning mx-3">Düzenle</a>
+                                <a asp-action="KategoriSil" asp-controller="Sil" class="btn btn-danger mx-3">Sil</a>
+                        </td>
                     </tr>
+                    }
+                    @foreach (var ktg in Model.AltKategoriList)
+                    {
+                        <tr>
+                            <td>@ktg.UstKategoriId</td>
+                            <td>@ktg.KategoriAdi</td>
+
+                            <td></td>
+                            <td>
+                                <a asp-action="KategoriDuzenle" asp-controller="Duzenle" asp-route-id="@ktg.Id" class="btn btn-warning mx-3">Düzenle</a>
+                                <a asp-action="KategoriSil" asp-controller="Sil" class="btn btn-danger mx-3">Sil</a>
+                            </td>
+                        </tr>
+                    }
 
                 </tbody>
             </table>
@@ -52,7 +69,7 @@
             <div class="modal-body">
                 
                     <input type="text" name="Kategori_Adi" class="form-control" id="exampleFormControlInput1" placeholder="kategori adı">
-                    <input type="hidden" name="altkategori" value="0"/>
+                    <input type="hidden" name="anakategori" value="0" />
                 
             </div>
             <div class="modal-footer">
@@ -79,12 +96,18 @@
 
                     <input type="text" name="Kategori_Adi" class="form-control" id="exampleFormControlInput1" placeholder="Kategori Adı">
                     <label for="exampleFormControlInput1">Ana Kategori Seç</label>
-                    <select class="form-control" name="altkategori">
+                    <select class="form-control" name="anakategori">
                         @foreach(var anaktg in Model.AnaKategoriList)
                         {
                             <option value="@anaktg.Id">@anaktg.KategoriAdi</option>
                         }
-                        @foreach(var altktg in Model.AltKategoriList)
+                        
+                    </select>
+                    <label for="exampleFormControlInput1">Alt Kategori Seç</label>
+                    <select class="form-control" name="altkategori">
+                        <option value="0" >Kategori Seç</option>
+                        }
+                        @foreach (var altktg in Model.AltKategoriList)
                         {
                             <option value="@altktg.Id">@altktg.KategoriAdi</option>
                         }

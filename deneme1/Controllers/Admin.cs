@@ -41,9 +41,9 @@ namespace eticaret.Controllers
             return View(ktg);
         }
         [HttpPost]
-        public IActionResult KategoriEkle(string Kategori_Adi,string altkategori)
+        public IActionResult KategoriEkle(string Kategori_Adi,string? altkategori, string anakategori)
         {
-            if (altkategori == "0")
+            if (anakategori == "0")
             {
                 var ktgekle = new AnaKategori
                 {
@@ -55,6 +55,33 @@ namespace eticaret.Controllers
             }
             else
             {
+                int anaktgid=Convert.ToInt32(anakategori);
+                if (altkategori == "0")
+                {
+                    var altktg = new AltKategori
+                    {
+                        AnaKategoriId = anaktgid,
+                        KategoriAdi = Kategori_Adi,
+                        Durum = true,
+                        UstKategoriId=null
+                    };
+                    _db.AltKategoris.Add(altktg);
+                }
+                else
+                {
+                    int ustktgid=Convert.ToInt32(altkategori);
+                    var altktg = new AltKategori
+                    {
+                        AnaKategoriId = anaktgid,
+                        KategoriAdi = Kategori_Adi,
+                        Durum = true,
+                        UstKategoriId=ustktgid,
+                    };
+                    _db.AltKategoris.Add(altktg);
+                }
+
+                   
+                _db.SaveChanges();
 
             }
                 return RedirectToAction("Kategoriler","Admin");
