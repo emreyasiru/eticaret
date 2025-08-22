@@ -40,6 +40,26 @@ namespace eticaret.Controllers
             };
             return View(ktg);
         }
+        [HttpGet]
+        public IActionResult Urunler()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Giris", "Admin");
+            }
+            return View();
+        }
+        [HttpGet]
+        public IActionResult UrunEkle()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Giris", "Admin");
+            }
+            return View();
+        }
         [HttpPost]
         public IActionResult KategoriEkle(string Kategori_Adi,string? altkategori, string anakategori)
         {

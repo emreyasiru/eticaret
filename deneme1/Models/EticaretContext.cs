@@ -23,6 +23,12 @@ public partial class EticaretContext : DbContext
 
     public virtual DbSet<KullaniciBilgileri> KullaniciBilgileris { get; set; }
 
+    public virtual DbSet<UrunDetay> UrunDetays { get; set; }
+
+    public virtual DbSet<UrunGorsel> UrunGorsels { get; set; }
+
+    public virtual DbSet<Urunler> Urunlers { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=DESKTOP-GBH2I4C\\SQLEXPRESS;Database=Eticaret;User Id=sa;Password=1;TrustServerCertificate=True;");
@@ -91,6 +97,53 @@ public partial class EticaretContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("telefon");
             entity.Property(e => e.Yetki).HasColumnName("yetki");
+        });
+
+        modelBuilder.Entity<UrunDetay>(entity =>
+        {
+            entity.ToTable("UrunDetay");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Beden)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("beden");
+            entity.Property(e => e.Boy)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("boy");
+            entity.Property(e => e.Numara).HasColumnName("numara");
+            entity.Property(e => e.Renk)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("renk");
+        });
+
+        modelBuilder.Entity<UrunGorsel>(entity =>
+        {
+            entity.ToTable("UrunGorsel");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Ad).IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Urunler>(entity =>
+        {
+            entity.ToTable("Urunler");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Aciklama).HasColumnType("text");
+            entity.Property(e => e.Alis).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.IndirimliFiyat)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("indirimliFiyat");
+            entity.Property(e => e.KategoriId).HasColumnName("Kategori_id");
+            entity.Property(e => e.Satis).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Stok).HasColumnName("stok");
+            entity.Property(e => e.UrunAdi)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.VergiId).HasColumnName("Vergi_id");
         });
 
         OnModelCreatingPartial(modelBuilder);
