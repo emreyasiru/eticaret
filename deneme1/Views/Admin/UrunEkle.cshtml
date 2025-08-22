@@ -85,7 +85,7 @@
                                     url: "@Url.Action("KategoriGetir","Admin")",
                                     type:"GET",
                                     data: {id: ekle},
-                                    succes:function (cevap){
+                                    success:function (cevap){
                                         alan.innerHTML+=cevap;
                                     },
                                     error:function(xhr){
@@ -100,7 +100,7 @@
                                  url: "@Url.Action("AltKategoriGetir", "Admin")",
                                  type:"GET",
                                  data: {id: ekle},
-                                 succes:function (cevap){
+                                 success:function (cevap){
                                      alan.innerHTML+=cevap;
                                  },
                                  error:function(xhr){

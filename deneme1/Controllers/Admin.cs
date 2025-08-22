@@ -162,5 +162,9 @@ namespace eticaret.Controllers
                 return View();
             }
         }
+        public IActionResult deneme()
+        {
+            return View();
+        }
     }
 }
