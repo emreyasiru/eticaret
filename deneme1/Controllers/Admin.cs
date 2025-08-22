@@ -65,6 +65,35 @@ namespace eticaret.Controllers
             };
             return View(veriler);
         }
+        [HttpGet]
+        public IActionResult KategoriGetir(int id)
+        {
+            var gelen=_db.AltKategoris.Where(x=>x.AnaKategoriId == id && x.UstKategoriId==null).ToList();
+            var html = "<select  class='form-select' onchange='secimim()' id='altkategori'>";
+            html += "<option> Seçim yapınız</option>";
+            foreach(var item in gelen)
+            {
+                html += "<option value=" + item.Id + ">" + item.KategoriAdi + "</option>";
+            }
+            html += "</select>";
+            return Content(html, "text/html");
+        }
+
+        [HttpGet]
+        public IActionResult AltKategoriGetir(int id)
+        {
+            var gelen = _db.AltKategoris.Where(x => x.UstKategoriId == id).ToList();
+            var html = "<select  class='form-select' onchange='secimim()' id='altkategori'>";
+            html += "<option> Seçim yapınız</option>";
+            foreach (var item in gelen)
+            {
+                html += "<option value=" + item.Id + ">" + item.KategoriAdi + "</option>";
+            }
+            html += "</select>";
+            return Content(html, "text/html");
+        }
+
+
         [HttpPost]
         public IActionResult KategoriEkle(string Kategori_Adi,string? altkategori, string anakategori)
         {

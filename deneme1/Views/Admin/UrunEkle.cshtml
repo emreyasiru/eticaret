@@ -69,13 +69,47 @@
                     <div class="col col-md-3">
                         <label for="select" class=" form-control-label">Kategori</label>
                     </div>
-                    <div class="col-12 col-md-9">
-                        <select name="Kategori" id="select" class="form-select">
+                    <div class="col-12 col-md-9" id="ekleme">
+                        <select name="Kategori" id="kategori" class="form-select" onchange="secim()">
+                            <option>Kategori Seç</option>
                         @foreach (var itemm in Model.Kategorilerim)
                         {
                             <option value="@itemm.Id">@itemm.KategoriAdi </option>
                         }
                         </select>
+                        <script>
+                            function secim(){
+                                var ekle=document.getElementById("kategori").value;
+                                var alan=document.getElementById("ekleme");
+                                $.ajax({
+                                    url: "@Url.Action("KategoriGetir","Admin")",
+                                    type:"GET",
+                                    data: {id: ekle},
+                                    succes:function (cevap){
+                                        alan.innerHTML+=cevap;
+                                    },
+                                    error:function(xhr){
+                                        console.error("ajax hatası:",xhr.responseText);
+                                    }
+                                });
+                            }
+                            function secimim(){
+                                var ekle=document.getElementById("altkategori").value;
+                                var alan=document.getElementById("ekleme");
+                                 $.ajax({
+                                 url: "@Url.Action("AltKategoriGetir", "Admin")",
+                                 type:"GET",
+                                 data: {id: ekle},
+                                 succes:function (cevap){
+                                     alan.innerHTML+=cevap;
+                                 },
+                                 error:function(xhr){
+                                     console.error("ajax hatası:",xhr.responseText);
+                                 }
+                             });
+
+                           }
+                        </script>
                     </div>
                 </div>
             <div class="row mb-3">
@@ -103,7 +137,7 @@
         </div>
         <div class="card-footer d-flex justify-content-end">
             <button type="submit" class="btn btn-primary btn-md mx-3">
-                <i class="fa fa-dot-circle-o"></i> Gönder
+                <i class="fa fa-dot-circle-o"></i> Kaydet
             </button>
             <button type="reset" class="btn btn-danger btn-md">
                 <i class="fa fa-ban"></i> Sıfırla
