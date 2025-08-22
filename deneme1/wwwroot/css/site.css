@@ -34,3 +34,309 @@ body {
     background-color: #4e73df; /* koyu gri/siyah */
     color: #fff; /* beyaz yazý */
 }
+/* Form Card Stilleri */
+.card {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    border: 1px solid #e3e6f0;
+    border-radius: 0.35rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    color: #5a5c69;
+}
+
+.card-body {
+    padding: 1.5rem;
+    background-color: #fff;
+}
+
+.card-footer {
+    background-color: #f8f9fc;
+    border-top: 1px solid #e3e6f0;
+    padding: 0.75rem 1.25rem;
+}
+
+/* Form Genel Stilleri */
+.form-horizontal {
+    margin: 0;
+}
+
+    .form-horizontal .row {
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+        .form-horizontal .row:last-child {
+            margin-bottom: 0;
+        }
+
+/* Label Stilleri */
+.form-control-label {
+    font-weight: 600;
+    color: #5a5c69;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    min-height: 38px;
+}
+
+/* Form Control Stilleri */
+.form-control {
+    border: 2px solid #d1d3e2;
+    border-radius: 0.35rem;
+    color: #3a3b45;
+    font-size: 0.95rem;
+    transition: all 0.15s ease-in-out;
+    padding: 0.6rem 0.9rem;
+    height: auto;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.3);
+        outline: 0;
+    }
+
+    .form-control:disabled {
+        background-color: #eaecf4;
+        opacity: 1;
+        color: #858796;
+    }
+
+/* Select Stilleri */
+.form-select {
+    border: 2px solid #d1d3e2;
+    border-radius: 0.35rem;
+    color: #3a3b45;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+    padding: 0.6rem 2.5rem 0.6rem 0.9rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23495057' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 14px 10px;
+    appearance: none;
+}
+
+    .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.3);
+        outline: 0;
+    }
+
+    .form-select:disabled {
+        background-color: #eaecf4;
+        opacity: 1;
+        color: #858796;
+    }
+
+/* Select Boyutlarý */
+.form-select-lg {
+    padding: 0.7rem 3rem 0.7rem 1.2rem;
+    font-size: 1.1rem;
+    border-radius: 0.35rem;
+    background-position: right 1rem center;
+}
+
+.form-select-sm {
+    padding: 0.4rem 2rem 0.4rem 0.7rem;
+    font-size: 0.85rem;
+    border-radius: 0.35rem;
+    background-position: right 0.6rem center;
+}
+
+/* Textarea Stilleri */
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Plaintext Stilleri */
+.form-control-plaintext {
+    padding: 0.375rem 0;
+    margin-bottom: 0;
+    line-height: 1.5;
+    color: #5a5c69;
+    background-color: transparent;
+    border: solid transparent;
+    border-width: 1px 0;
+    font-weight: 500;
+}
+
+/* Radio ve Checkbox Stilleri */
+.form-check {
+    position: relative;
+    display: block;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+    position: absolute;
+    margin-top: 0.3rem;
+    margin-left: -1.5rem;
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #d1d3e2;
+    appearance: none;
+    color-adjust: exact;
+}
+
+    .form-check-input[type="radio"] {
+        border-radius: 50%;
+    }
+
+    .form-check-input[type="checkbox"] {
+        border-radius: 0.25rem;
+    }
+
+    .form-check-input:focus {
+        border-color: #bac8f3;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+
+    .form-check-input:checked {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+
+        .form-check-input:checked[type="radio"] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+        }
+
+        .form-check-input:checked[type="checkbox"] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+        }
+
+.form-check-label {
+    color: #5a5c69;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+/* Inline Form Check */
+.form-check-inline {
+    display: inline-block;
+    margin-right: 1rem;
+    margin-bottom: 0;
+}
+
+/* Help Text */
+.form-text {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: #858796;
+}
+
+/* File Input */
+input[type="file"].form-control {
+    padding: 0.6rem 0.9rem;
+    height: auto;
+    line-height: 1.5;
+    border: 2px solid #d1d3e2;
+    font-size: 0.95rem;
+    color: #3a3b45;
+    font-weight: 500;
+}
+
+    input[type="file"].form-control::file-selector-button {
+        padding: 0.5rem 1rem;
+        margin: -0.6rem -0.9rem;
+        margin-inline-end: 0.9rem;
+        color: #3a3b45;
+        background-color: #f8f9fc;
+        border: 0;
+        border-inline-end: 2px solid #d1d3e2;
+        border-radius: 0;
+        transition: all 0.15s ease-in-out;
+        font-weight: 600;
+    }
+
+    input[type="file"].form-control:hover::file-selector-button {
+        background-color: #eaecf4;
+    }
+
+/* Button Stilleri */
+.btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.65rem 1.2rem;
+    border-radius: 0.35rem;
+    transition: all 0.15s;
+    min-width: 120px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+    .btn-primary:hover {
+        background-color: #2e59d9;
+        border-color: #2653d4;
+        color: #fff;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+    }
+
+.btn-danger {
+    background-color: #e74a3b;
+    border-color: #e74a3b;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.65rem 1.2rem;
+    border-radius: 0.35rem;
+    transition: all 0.15s;
+    min-width: 120px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+    .btn-danger:hover {
+        background-color: #c23321;
+        border-color: #b52d1c;
+        color: #fff;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+    }
+
+.btn-sm {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 0.25rem;
+    min-width: 100px;
+}
+
+/* Responsive Ayarlarý */
+@media (max-width: 768px) {
+    .form-horizontal .row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-horizontal .col-md-3 {
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control-label {
+        min-height: auto;
+        text-align: left;
+    }
+
+    .form-check-inline {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+}

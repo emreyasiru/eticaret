@@ -58,7 +58,12 @@ namespace eticaret.Controllers
             {
                 return RedirectToAction("Giris", "Admin");
             }
-            return View();
+            var veriler = new UrunKayit
+            {
+                Vergilerim = _db.Vergis.ToList(),
+                Kategorilerim = _db.AnaKategoris.ToList()
+            };
+            return View(veriler);
         }
         [HttpPost]
         public IActionResult KategoriEkle(string Kategori_Adi,string? altkategori, string anakategori)

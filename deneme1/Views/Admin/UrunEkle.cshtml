@@ -3,6 +3,114 @@
     ViewData["Title"] = "UrunEkle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@model eticaret.Modeller.UrunKayit
 
-<h1>UrunEkle</h1>
+<div class="col">
+        <div class="card-body card-body">
+            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                
+                <div class="row mb-3">
+                    <div class="col col-md-3">
+                        <label for="text-input" class=" form-control-label">Ürün Adı</label>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <input type="text" id="text-input" name="text-input" placeholder="Ürün giriniz" class="form-control">
+
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col col-md-3">
+                        <label for="email-input" class=" form-control-label">Stok Adeti</label>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <input type="text" id="email-input" name="email-input" placeholder="Adet giriniz" class="form-control">
+                        
+                    </div>
+                </div>
+               
+                
+                <div class="row mb-3">
+                    <div class="col col-md-3">
+                        <label for="textarea-input" class=" form-control-label">Ürün Açıklaması</label>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <textarea name="textarea-input" id="textarea-input" rows="9" placeholder="Açıklama..." class="form-control"></textarea>
+                    </div>
+                </div>
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="text-input" class=" form-control-label">Alış Fiyatı</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="text" id="text-input" name="text-input" placeholder="Tutar" class="form-control">
+
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="text-input" class=" form-control-label">Satış Fiyatı</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="text" id="text-input" name="text-input" placeholder="Tutar" class="form-control">
+
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="text-input" class=" form-control-label">İndirimli Fiyatı</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="text" id="text-input" name="text-input" placeholder="Tutar" class="form-control">
+
+                </div>
+            </div>
+
+                <div class="row mb-3">
+                    <div class="col col-md-3">
+                        <label for="select" class=" form-control-label">Kategori</label>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <select name="Kategori" id="select" class="form-select">
+                        @foreach (var itemm in Model.Kategorilerim)
+                        {
+                            <option value="@itemm.Id">@itemm.KategoriAdi </option>
+                        }
+                        </select>
+                    </div>
+                </div>
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="select" class=" form-control-label">Vergi Dilimi</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <select name="Vergi" id="select" class="form-select">
+                        @foreach(var item in Model.Vergilerim)
+                        {
+                            <option value="@item.Id">@item.Adi - @item.Orani %</option>
+                        }
+                    </select>
+                </div>
+            </div>            
+                <div class="row mb-3">
+                    <div class="col col-md-3">
+                        <label for="file-multiple-input" class=" form-control-label">Ürün Görselleri</label>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <input type="file" id="file-multiple-input" name="file-multiple-input" multiple="" class="form-control">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary btn-md mx-3">
+                <i class="fa fa-dot-circle-o"></i> Gönder
+            </button>
+            <button type="reset" class="btn btn-danger btn-md">
+                <i class="fa fa-ban"></i> Sıfırla
+            </button>
+        </div>
+    </div>
+
+    
+</div>
 
