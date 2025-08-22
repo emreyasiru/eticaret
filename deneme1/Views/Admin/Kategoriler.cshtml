@@ -3,6 +3,7 @@
     ViewData["Title"] = "Kategoriler";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@model eticaret.Modeller.Kategori
 <div class="row">
     <div class="col-12 mb-3 ">
         <button class="btn btn-primary mr-3" data-toggle="modal" data-target="#kategoriekle">Kategori Ekle</button>
@@ -47,10 +48,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form asp-controller="Admin" asp-action="Kategoriler" method="post">
+            <form asp-controller="Admin" asp-action="KategoriEkle" method="post">
             <div class="modal-body">
                 
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="kategori adı">
+                    <input type="text" name="Kategori_Adi" class="form-control" id="exampleFormControlInput1" placeholder="kategori adı">
                     <input type="hidden" name="altkategori" value="0"/>
                 
             </div>
@@ -73,13 +74,20 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form asp-controller="Admin" asp-action="Kategoriler" method="post">
+            <form asp-controller="Admin" asp-action="KategoriEkle" method="post">
                 <div class="modal-body">
 
-                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Kategori Adı">
+                    <input type="text" name="Kategori_Adi" class="form-control" id="exampleFormControlInput1" placeholder="Kategori Adı">
                     <label for="exampleFormControlInput1">Ana Kategori Seç</label>
                     <select class="form-control" name="altkategori">
-                        <option>kategoriler</option>
+                        @foreach(var anaktg in Model.AnaKategoriList)
+                        {
+                            <option value="@anaktg.Id">@anaktg.KategoriAdi</option>
+                        }
+                        @foreach(var altktg in Model.AltKategoriList)
+                        {
+                            <option value="@altktg.Id">@altktg.KategoriAdi</option>
+                        }
                     </select>
                 </div>
                 <div class="modal-footer">

@@ -1,6 +1,6 @@
 ﻿using eticaret.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using eticaret.Modeller;
 namespace eticaret.Controllers
 {
     public class Admin : Controller
@@ -31,7 +31,33 @@ namespace eticaret.Controllers
             {
                 return RedirectToAction("Giris", "Admin");
             }
-            return View();
+            var anaktg = _db.AnaKategoris.ToList();
+            var altktg=_db.AltKategoris.ToList();
+            var ktg = new Kategori
+            {
+                AnaKategoriList = anaktg,
+                AltKategoriList = altktg
+            };
+            return View(ktg);
+        }
+        [HttpPost]
+        public IActionResult KategoriEkle(string Kategori_Adi,string altkategori)
+        {
+            if (altkategori == "0")
+            {
+                var ktgekle = new AnaKategori
+                {
+                    KategoriAdi = Kategori_Adi
+                };
+                _db.AnaKategoris.Add(ktgekle);
+                _db.SaveChanges();
+                ViewBag.hata = "kategori ekleme işlemi tamamlanmıştır";
+            }
+            else
+            {
+
+            }
+                return RedirectToAction("Kategoriler","Admin");
         }
         [HttpPost]
         public IActionResult Giris(string username, string password)

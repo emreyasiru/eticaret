@@ -15,6 +15,10 @@ public partial class EticaretContext : DbContext
     {
     }
 
+    public virtual DbSet<AltKategori> AltKategoris { get; set; }
+
+    public virtual DbSet<AnaKategori> AnaKategoris { get; set; }
+
     public virtual DbSet<Kullanici> Kullanicis { get; set; }
 
     public virtual DbSet<KullaniciBilgileri> KullaniciBilgileris { get; set; }
@@ -25,6 +29,28 @@ public partial class EticaretContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AltKategori>(entity =>
+        {
+            entity.ToTable("AltKategori");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AnaKategoriId).HasColumnName("AnaKategori_id");
+            entity.Property(e => e.KategoriAdi)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<AnaKategori>(entity =>
+        {
+            entity.ToTable("AnaKategori");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.KategoriAdi)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("Kategori_Adi");
+        });
+
         modelBuilder.Entity<Kullanici>(entity =>
         {
             entity.ToTable("Kullanici");
