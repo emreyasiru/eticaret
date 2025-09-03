@@ -68,14 +68,33 @@ namespace eticaret.Controllers
         [HttpGet]
         public IActionResult KategoriGetir(int id)
         {
-            var gelen=_db.AltKategoris.Where(x=>x.AnaKategoriId == id && x.UstKategoriId==null).ToList();
-            var html = "<select  class='form-select' onchange='secimim()' id='altkategori'>";
-            html += "<option> Seçim yapınız</option>";
-            foreach(var item in gelen)
+            var gelen = _db.AltKategoris.Where(x => x.AnaKategoriId == id && x.UstKategoriId == null).ToList();
+
+            // Seçilen kategorinin adını al
+            var secilenKategori = _db.AnaKategoris.FirstOrDefault(x => x.Id == id);
+
+            var html = "";
+
+            // Önce seçilen kategori adını göster
+            if (secilenKategori != null)
             {
-                html += "<option value=" + item.Id + ">" + item.KategoriAdi + "</option>";
+                html += "<div class='alert alert-info mt-2 secilen-kategori'>";
+                html += "<strong>Seçilen:</strong> " + secilenKategori.KategoriAdi;
+                html += "</div>";
             }
-            html += "</select>";
+
+            // Eğer alt kategoriler varsa select oluştur
+            if (gelen.Count > 0)
+            {
+                html += "<select class='form-select mt-2' onchange='secimim(this)' data-seviye='2'>";
+                html += "<option value=''>Alt kategori seçiniz</option>";
+                foreach (var item in gelen)
+                {
+                    html += "<option value='" + item.Id + "'>" + item.KategoriAdi + "</option>";
+                }
+                html += "</select>";
+            }
+
             return Content(html, "text/html");
         }
 
@@ -83,13 +102,32 @@ namespace eticaret.Controllers
         public IActionResult AltKategoriGetir(int id)
         {
             var gelen = _db.AltKategoris.Where(x => x.UstKategoriId == id).ToList();
-            var html = "<select  class='form-select' onchange='secimim()' id='altkategori'>";
-            html += "<option> Seçim yapınız</option>";
-            foreach (var item in gelen)
+
+            // Seçilen alt kategorinin adını al
+            var secilenAltKategori = _db.AltKategoris.FirstOrDefault(x => x.Id == id);
+
+            var html = "";
+
+            // Önce seçilen kategori adını göster
+            if (secilenAltKategori != null)
             {
-                html += "<option value=" + item.Id + ">" + item.KategoriAdi + "</option>";
+                html += "<div class='alert alert-success mt-2 secilen-kategori'>";
+                html += "<strong>Seçilen:</strong> " + secilenAltKategori.KategoriAdi;
+                html += "</div>";
             }
-            html += "</select>";
+
+            // Eğer alt kategoriler varsa select oluştur
+            if (gelen.Count > 0)
+            {
+                html += "<select class='form-select mt-2' onchange='secimim(this)' data-seviye='3'>";
+                html += "<option value=''>Alt kategori seçiniz</option>";
+                foreach (var item in gelen)
+                {
+                    html += "<option value='" + item.Id + "'>" + item.KategoriAdi + "</option>";
+                }
+                html += "</select>";
+            }
+
             return Content(html, "text/html");
         }
 
