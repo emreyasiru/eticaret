@@ -22,14 +22,15 @@
 </head>
 <body id="page-top">
     <div id="wrapper">
+        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Index">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                    <i class="fas fa-store"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Admin Panel <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">E-Ticaret <sup>Admin</sup></div>
             </a>
 
             <!-- Divider -->
@@ -38,91 +39,106 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" asp-controller="Admin" asp-action="Index">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-home"></i>
                     <span>Anasayfa</span>
                 </a>
             </li>
-
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                
+                Yönetim
             </div>
 
-            <!-- Nav Item - Pages Collapse Menu -->
+            <!-- Nav Item - Ürünler Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                   aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProducts"
+                   aria-expanded="true" aria-controls="collapseProducts">
+                    <i class="fas fa-fw fa-shopping-bag"></i>
                     <span>Ürünler</span>
                 </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="collapseProducts" class="collapse" aria-labelledby="headingProducts" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" asp-controller="Admin" asp-action="Urunler">Ürünler</a>
-                        <a class="collapse-item" asp-controller="Admin" asp-action="UrunEkle">Ürün Ekle</a>
-                        <a class="collapse-item" asp-controller="Admin" asp-action="Kategoriler">Kategoriler</a>
-                        
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                   aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Utilities</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-                     data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                       
-                        <a class="collapse-item" href="utilities-color.html">Colors</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
-                        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
-                    </div>
-                </div>
-            </li>
-
-          
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                   aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item" href="register.html">Register</a>
-                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <h6 class="collapse-header">Ürün Yönetimi:</h6>
+                        <a class="collapse-item" asp-controller="Admin" asp-action="Urunler">
+                            <i class="fas fa-list mr-2"></i>Ürün Listesi
+                        </a>
+                        <a class="collapse-item" asp-controller="Admin" asp-action="UrunEkle">
+                            <i class="fas fa-plus mr-2"></i>Ürün Ekle
+                        </a>
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Other Pages:</h6>
-                        <a class="collapse-item" href="404.html">404 Page</a>
-                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                        <h6 class="collapse-header">Kategori Yönetimi:</h6>
+                        <a class="collapse-item" asp-controller="Admin" asp-action="Kategoriler">
+                            <i class="fas fa-tags mr-2"></i>Kategoriler
+                        </a>
                     </div>
                 </div>
             </li>
 
-            <!-- Nav Item - Charts -->
+            <!-- Nav Item - Siparişler -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span>
+                <a class="nav-link" asp-controller="Admin" asp-action="Siparisler">
+                    <i class="fas fa-fw fa-clipboard-list"></i>
+                    <span>Siparişler</span>
                 </a>
             </li>
 
-            <!-- Nav Item - Tables -->
+            <!-- Nav Item - Müşteriler -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span>
+                <a class="nav-link" asp-controller="Admin" asp-action="Musteriler">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Müşteriler</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Raporlar Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReports"
+                   aria-expanded="true" aria-controls="collapseReports">
+                    <i class="fas fa-fw fa-chart-line"></i>
+                    <span>Raporlar</span>
+                </a>
+                <div id="collapseReports" class="collapse" aria-labelledby="headingReports" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Satış Raporları:</h6>
+                        <a class="collapse-item" href="#">
+                            <i class="fas fa-chart-bar mr-2"></i>Satış Raporu
+                        </a>
+                        <a class="collapse-item" href="#">
+                            <i class="fas fa-chart-pie mr-2"></i>Kategori Analizi
+                        </a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Finansal:</h6>
+                        <a class="collapse-item" href="#">
+                            <i class="fas fa-money-bill-wave mr-2"></i>Gelir Raporu
+                        </a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Sistem
+            </div>
+
+            <!-- Nav Item - Ayarlar -->
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="Ayarlar">
+                    <i class="fas fa-fw fa-cogs"></i>
+                    <span>Ayarlar</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Yedekleme -->
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="Yedekleme">
+                    <i class="fas fa-fw fa-database"></i>
+                    <span>Yedekleme</span>
                 </a>
             </li>
 
@@ -133,8 +149,6 @@
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-
-           
 
         </ul>
         <!-- End of Sidebar -->
