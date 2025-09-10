@@ -48,7 +48,78 @@ namespace eticaret.Controllers
             {
                 return RedirectToAction("Giris", "Admin");
             }
-            return View();
+
+            try
+            {
+                // Önce AltKategoris ile join dene
+                var urunlerAltKategori = (from u in _db.Urunlers
+                                          join a in _db.AltKategoris on u.KategoriId equals a.Id
+                                          select new UrunListeView
+                                          {
+                                              Id = u.Id,
+                                              UrunAdi = u.UrunAdi,
+                                              Stok = u.Stok,
+                                              KategoriId = u.KategoriId,
+                                              KategoriAdi = a.KategoriAdi,
+                                              Alis = u.Alis,
+                                              Satis = u.Satis,
+                                              IndirimliFiyat = u.IndirimliFiyat,
+                                              Aciklama = u.Aciklama
+                                          }).ToList();
+
+                // Eğer AltKategoris'ten sonuç gelmezse, AnaKategoris'ten dene
+                if (!urunlerAltKategori.Any())
+                {
+                    var urunlerAnaKategori = (from u in _db.Urunlers
+                                              join ak in _db.AnaKategoris on u.KategoriId equals ak.Id
+                                              select new UrunListeView
+                                              {
+                                                  Id = u.Id,
+                                                  UrunAdi = u.UrunAdi,
+                                                  Stok = u.Stok,
+                                                  KategoriId = u.KategoriId,
+                                                  KategoriAdi = ak.KategoriAdi,
+                                                  Alis = u.Alis,
+                                                  Satis = u.Satis,
+                                                  IndirimliFiyat = u.IndirimliFiyat,
+                                                  Aciklama = u.Aciklama
+                                              }).ToList();
+
+                    if (urunlerAnaKategori.Any())
+                    {
+                        return View(urunlerAnaKategori);
+                    }
+                }
+                else
+                {
+                    return View(urunlerAltKategori);
+                }
+
+                // Her iki durumda da sonuç yoksa, left join ile tüm ürünleri getir
+                var tumUrunler = (from u in _db.Urunlers
+                                  from ak in _db.AnaKategoris.Where(x => x.Id == u.KategoriId).DefaultIfEmpty()
+                                  from alt in _db.AltKategoris.Where(x => x.Id == u.KategoriId).DefaultIfEmpty()
+                                  select new UrunListeView
+                                  {
+                                      Id = u.Id,
+                                      UrunAdi = u.UrunAdi,
+                                      Stok = u.Stok,
+                                      KategoriId = u.KategoriId,
+                                      KategoriAdi = alt != null ? alt.KategoriAdi :
+                                                   (ak != null ? ak.KategoriAdi : "Kategori Bulunamadı"),
+                                      Alis = u.Alis,
+                                      Satis = u.Satis,
+                                      IndirimliFiyat = u.IndirimliFiyat,
+                                      Aciklama = u.Aciklama
+                                  }).ToList();
+
+                return View(tumUrunler);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Hata = $"Ürünler yüklenirken hata oluştu: {ex.Message}";
+                return View(new List<UrunListeView>());
+            }
         }
         [HttpGet]
         public IActionResult UrunEkle()
