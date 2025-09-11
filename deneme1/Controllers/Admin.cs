@@ -1,15 +1,20 @@
 ﻿using eticaret.Models;
 using Microsoft.AspNetCore.Mvc;
 using eticaret.Modeller;
+
 namespace eticaret.Controllers
 {
     public class Admin : Controller
     {
         private readonly EticaretContext _db;
-        public Admin(EticaretContext db)
+        private readonly IWebHostEnvironment _env;
+
+        public Admin(EticaretContext db, IWebHostEnvironment env)
         {
             _db = db;
+            _env = env;
         }
+
         public IActionResult Index()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -19,12 +24,14 @@ namespace eticaret.Controllers
             }
             return View();
         }
+
         public IActionResult Giris()
         {
             return View();
         }
+
         [HttpGet]
-        public IActionResult Kategoriler() 
+        public IActionResult Kategoriler()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
@@ -32,7 +39,7 @@ namespace eticaret.Controllers
                 return RedirectToAction("Giris", "Admin");
             }
             var anaktg = _db.AnaKategoris.ToList();
-            var altktg=_db.AltKategoris.ToList();
+            var altktg = _db.AltKategoris.ToList();
             var ktg = new Kategori
             {
                 AnaKategoriList = anaktg,
@@ -40,6 +47,7 @@ namespace eticaret.Controllers
             };
             return View(ktg);
         }
+
         [HttpGet]
         public IActionResult Urunler()
         {
@@ -121,6 +129,7 @@ namespace eticaret.Controllers
                 return View(new List<UrunListeView>());
             }
         }
+
         [HttpGet]
         public IActionResult UrunEkle()
         {
@@ -136,6 +145,157 @@ namespace eticaret.Controllers
             };
             return View(veriler);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UrunEkle(string UrunAdi, string StokAdeti, string Aciklama,
+            string AlisFiyati, string SatisFiyati, string IndirimliFiyat, int Kategori, int Vergi,
+            List<IFormFile> Gorseller)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Giris", "Admin");
+            }
+
+            try
+            {
+                // Validation
+                if (string.IsNullOrEmpty(UrunAdi))
+                {
+                    ViewBag.ErrorMessage = "Ürün adı zorunludur!";
+                    return await UrunEklePageReturn();
+                }
+
+                if (Kategori == 0)
+                {
+                    ViewBag.ErrorMessage = "Kategori seçimi zorunludur!";
+                    return await UrunEklePageReturn();
+                }
+
+                // Parse decimal values - boş değerler 0 olarak ayarlanır
+                decimal alis = 0;
+                decimal satis = 0;
+                decimal indirimli = 0;
+                int stok = 0;
+
+                if (!string.IsNullOrEmpty(AlisFiyati))
+                    decimal.TryParse(AlisFiyati.Replace(".", ","), out alis);
+
+                if (!string.IsNullOrEmpty(SatisFiyati))
+                    decimal.TryParse(SatisFiyati.Replace(".", ","), out satis);
+
+                if (!string.IsNullOrEmpty(IndirimliFiyat))
+                    decimal.TryParse(IndirimliFiyat.Replace(".", ","), out indirimli);
+
+                if (!string.IsNullOrEmpty(StokAdeti))
+                    int.TryParse(StokAdeti, out stok);
+
+                // Ürün kaydı oluştur
+                var yeniUrun = new Urunler
+                {
+                    UrunAdi = UrunAdi.Trim(),
+                    Stok = stok,
+                    KategoriId = Kategori,
+                    Alis = alis,
+                    Satis = satis,
+                    IndirimliFiyat = indirimli,
+                    Aciklama = string.IsNullOrEmpty(Aciklama) ? "" : Aciklama.Trim(),
+                    VergiId = Vergi,
+                   
+                };
+
+                _db.Urunlers.Add(yeniUrun);
+                _db.SaveChanges();
+
+                // Debug: Eklenen ürünü konsola yazdır
+                Console.WriteLine($"Eklenen Ürün ID: {yeniUrun.Id}, Adı: {yeniUrun.UrunAdi}, KategoriId: {yeniUrun.KategoriId}");
+
+                // Görsel işlemleri
+                if (Gorseller != null && Gorseller.Count > 0)
+                {
+                    await GorselleriKaydet(yeniUrun.Id, Gorseller);
+                }
+
+                TempData["SuccessMessage"] = "Ürün başarıyla eklendi!";
+                return RedirectToAction("Urunler", "Admin");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ürün ekleme hatası: {ex.Message}");
+                ViewBag.ErrorMessage = $"Ürün eklenirken hata oluştu: {ex.Message}";
+                return await UrunEklePageReturn();
+            }
+        }
+
+        private async Task<IActionResult> UrunEklePageReturn()
+        {
+            var veriler = new UrunKayit
+            {
+                Vergilerim = _db.Vergis.ToList(),
+                Kategorilerim = _db.AnaKategoris.ToList()
+            };
+            return View("UrunEkle", veriler);
+        }
+
+        private async Task GorselleriKaydet(int urunId, List<IFormFile> gorseller)
+        {
+            try
+            {
+                // Ana upload klasörünü oluştur
+                string uploadsPath = Path.Combine(_env.WebRootPath, "uploads", "urunler", urunId.ToString());
+
+                if (!Directory.Exists(uploadsPath))
+                {
+                    Directory.CreateDirectory(uploadsPath);
+                }
+
+                bool ilkGorsel = true;
+
+                foreach (var gorsel in gorseller)
+                {
+                    if (gorsel != null && gorsel.Length > 0)
+                    {
+                        // Güvenli dosya uzantısı kontrolü
+                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp" };
+                        var fileExtension = Path.GetExtension(gorsel.FileName).ToLowerInvariant();
+
+                        if (!allowedExtensions.Contains(fileExtension))
+                        {
+                            continue; // Geçersiz uzantılı dosyaları atla
+                        }
+
+                        // Güvenli dosya adı oluştur
+                        string guvenliDosyaAdi = $"urun_{urunId}_{DateTime.Now.Ticks}{fileExtension}";
+                        string dosyaYolu = Path.Combine(uploadsPath, guvenliDosyaAdi);
+
+                        // Dosyayı kaydet
+                        using (var stream = new FileStream(dosyaYolu, FileMode.Create))
+                        {
+                            await gorsel.CopyToAsync(stream);
+                        }
+
+                        // Mevcut UrunGorsel tablonuza kaydet
+                        var urunGorsel = new UrunGorsel
+                        {
+                            Urunid = urunId,
+                            Ad = guvenliDosyaAdi, // Güvenli dosya adı
+                            Baslangic = ilkGorsel // İlk görsel ana görsel olsun
+                        };
+
+                        _db.UrunGorsels.Add(urunGorsel);
+                        ilkGorsel = false; // İkinci görselden sonra false yap
+                    }
+                }
+
+                _db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda log ekleyebilirsiniz
+                throw new Exception($"Görseller kaydedilirken hata: {ex.Message}");
+            }
+        }
+
         [HttpGet]
         public IActionResult KategoriGetir(int id)
         {
@@ -202,9 +362,8 @@ namespace eticaret.Controllers
             return Content(html, "text/html");
         }
 
-
         [HttpPost]
-        public IActionResult KategoriEkle(string Kategori_Adi,string? altkategori, string anakategori)
+        public IActionResult KategoriEkle(string Kategori_Adi, string? altkategori, string anakategori)
         {
             if (anakategori == "0")
             {
@@ -218,7 +377,7 @@ namespace eticaret.Controllers
             }
             else
             {
-                int anaktgid=Convert.ToInt32(anakategori);
+                int anaktgid = Convert.ToInt32(anakategori);
                 if (altkategori == "0")
                 {
                     var altktg = new AltKategori
@@ -226,34 +385,35 @@ namespace eticaret.Controllers
                         AnaKategoriId = anaktgid,
                         KategoriAdi = Kategori_Adi,
                         Durum = true,
-                        UstKategoriId=null
+                        UstKategoriId = null
                     };
                     _db.AltKategoris.Add(altktg);
                 }
                 else
                 {
-                    int ustktgid=Convert.ToInt32(altkategori);
+                    int ustktgid = Convert.ToInt32(altkategori);
                     var altktg = new AltKategori
                     {
                         AnaKategoriId = anaktgid,
                         KategoriAdi = Kategori_Adi,
                         Durum = true,
-                        UstKategoriId=ustktgid,
+                        UstKategoriId = ustktgid,
                     };
                     _db.AltKategoris.Add(altktg);
                 }
 
-                   
+
                 _db.SaveChanges();
 
             }
-                return RedirectToAction("Kategoriler","Admin");
+            return RedirectToAction("Kategoriler", "Admin");
         }
+
         [HttpPost]
         public IActionResult Giris(string username, string password)
         {
-            var dogrula=_db.Kullanicis.FirstOrDefault(x => x.Username == username && x.Password==password);
-            if(dogrula!=null)
+            var dogrula = _db.Kullanicis.FirstOrDefault(x => x.Username == username && x.Password == password);
+            if (dogrula != null)
             {
                 if (dogrula.Durum == false)
                 {
@@ -263,7 +423,7 @@ namespace eticaret.Controllers
 
                 HttpContext.Session.SetInt32("UserId", dogrula.Id);
                 HttpContext.Session.SetString("username", username);
-                return RedirectToAction("Index","Admin");
+                return RedirectToAction("Index", "Admin");
             }
             else
             {
@@ -271,6 +431,7 @@ namespace eticaret.Controllers
                 return View();
             }
         }
+
         public IActionResult deneme()
         {
             return View();

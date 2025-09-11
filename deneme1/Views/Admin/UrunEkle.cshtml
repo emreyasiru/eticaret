@@ -1,76 +1,89 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "UrunEkle";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @model eticaret.Modeller.UrunKayit
 
 <div class="col">
-        <div class="card-body card-body">
-            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                
-                <div class="row mb-3">
-                    <div class="col col-md-3">
-                        <label for="text-input" class=" form-control-label">Ürün Adı</label>
-                    </div>
-                    <div class="col-12 col-md-9">
-                        <input type="text" id="text-input" name="text-input" placeholder="Ürün giriniz" class="form-control">
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @ViewBag.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col col-md-3">
-                        <label for="email-input" class=" form-control-label">Stok Adeti</label>
-                    </div>
-                    <div class="col-12 col-md-9">
-                        <input type="text" id="email-input" name="email-input" placeholder="Adet giriniz" class="form-control">
-                        
-                    </div>
-                </div>
-               
-                
-                <div class="row mb-3">
-                    <div class="col col-md-3">
-                        <label for="textarea-input" class=" form-control-label">Ürün Açıklaması</label>
-                    </div>
-                    <div class="col-12 col-md-9">
-                        <textarea name="textarea-input" id="textarea-input" rows="9" placeholder="Açıklama..." class="form-control"></textarea>
-                    </div>
-                </div>
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @ViewBag.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card-body">
+        <form action="@Url.Action("UrunEkle", "Admin")" method="post" enctype="multipart/form-data" class="form-horizontal">
+
             <div class="row mb-3">
                 <div class="col col-md-3">
-                    <label for="text-input" class=" form-control-label">Alış Fiyatı</label>
+                    <label for="UrunAdi" class="form-control-label">Ürün Adı <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-12 col-md-9">
-                    <input type="text" id="text-input" name="text-input" placeholder="Tutar" class="form-control">
-
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col col-md-3">
-                    <label for="text-input" class=" form-control-label">Satış Fiyatı</label>
-                </div>
-                <div class="col-12 col-md-9">
-                    <input type="text" id="text-input" name="text-input" placeholder="Tutar" class="form-control">
-
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col col-md-3">
-                    <label for="text-input" class=" form-control-label">İndirimli Fiyatı</label>
-                </div>
-                <div class="col-12 col-md-9">
-                    <input type="text" id="text-input" name="text-input" placeholder="Tutar" class="form-control">
-
+                    <input type="text" id="UrunAdi" name="UrunAdi" placeholder="Ürün adını giriniz" class="form-control" required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col col-md-3">
-                    <label for="select" class="form-control-label">Kategori</label>
+                    <label for="StokAdeti" class="form-control-label">Stok Adeti</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="number" id="StokAdeti" name="StokAdeti" placeholder="Adet giriniz" class="form-control" min="0" step="1">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="Aciklama" class="form-control-label">Ürün Açıklaması</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <textarea name="Aciklama" id="Aciklama" rows="9" placeholder="Açıklama..." class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="AlisFiyati" class="form-control-label">Alış Fiyatı</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="number" id="AlisFiyati" name="AlisFiyati" placeholder="0.00" class="form-control" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="SatisFiyati" class="form-control-label">Satış Fiyatı</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="number" id="SatisFiyati" name="SatisFiyati" placeholder="0.00" class="form-control" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="IndirimliFiyat" class="form-control-label">İndirimli Fiyat</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="number" id="IndirimliFiyat" name="IndirimliFiyat" placeholder="0.00" class="form-control" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="kategori" class="form-control-label">Kategori <span class="text-danger">*</span></label>
                 </div>
                 <div class="col-12 col-md-9" id="ekleme">
-                    <select name="Kategori" id="kategori" class="form-select" onchange="secim()">
+                    <select name="Kategori" id="kategori" class="form-select" onchange="secim()" required>
                         <option value="">Kategori Seç</option>
                         @foreach (var itemm in Model.Kategorilerim)
                         {
@@ -160,42 +173,116 @@
                                 }
                             });
                         }
+
+                        // Form submit edilmeden önce doğru kategori ID'sini gönder
+                        document.querySelector('form').addEventListener('submit', function(e) {
+                            var kategoriSelect = document.getElementById("kategori");
+
+                            // Dinamik olarak eklenen son select'i bul
+                            var dinamikSelectler = document.querySelectorAll('select[data-seviye]');
+                            if (dinamikSelectler.length > 0) {
+                                // En son seviyedeki dolu select'i bul
+                                var sonSelect = null;
+                                for (var i = dinamikSelectler.length - 1; i >= 0; i--) {
+                                    if (dinamikSelectler[i].value && dinamikSelectler[i].value !== "") {
+                                        sonSelect = dinamikSelectler[i];
+                                        break;
+                                    }
+                                }
+
+                                if (sonSelect) {
+                                    // Ana select'in name'ini kaldır ve değerini son select'ten al
+                                    kategoriSelect.name = "";
+                                    sonSelect.name = "Kategori";
+                                }
+                            }
+                        });
                     </script>
                 </div>
             </div>
+
             <div class="row mb-3">
                 <div class="col col-md-3">
-                    <label for="select" class=" form-control-label">Vergi Dilimi</label>
+                    <label for="Vergi" class="form-control-label">Vergi Dilimi</label>
                 </div>
                 <div class="col-12 col-md-9">
-                    <select name="Vergi" id="select" class="form-select">
-                        @foreach(var item in Model.Vergilerim)
+                    <select name="Vergi" id="Vergi" class="form-select">
+                        <option value="0">Vergi Seçiniz</option>
+                        @foreach (var item in Model.Vergilerim)
                         {
                             <option value="@item.Id">@item.Adi - @item.Orani %</option>
                         }
                     </select>
                 </div>
-            </div>            
-                <div class="row mb-3">
-                    <div class="col col-md-3">
-                        <label for="file-multiple-input" class=" form-control-label">Ürün Görselleri</label>
-                    </div>
-                    <div class="col-12 col-md-9">
-                        <input type="file" id="file-multiple-input" name="file-multiple-input" multiple="" class="form-control">
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="card-footer d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary btn-md mx-3">
-                <i class="fa fa-dot-circle-o"></i> Kaydet
-            </button>
-            <button type="reset" class="btn btn-danger btn-md">
-                <i class="fa fa-ban"></i> Sıfırla
-            </button>
-        </div>
-    </div>
+            </div>
 
-    
+            <div class="row mb-3">
+                <div class="col col-md-3">
+                    <label for="Gorseller" class="form-control-label">Ürün Görselleri</label>
+                </div>
+                <div class="col-12 col-md-9">
+                    <input type="file" id="Gorseller" name="Gorseller" multiple accept="image/*" class="form-control">
+                    <small class="form-text text-muted">
+                        Desteklenen formatlar: JPG, JPEG, PNG, GIF, BMP, WEBP. Birden fazla görsel seçebilirsiniz.
+                    </small>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary btn-md mx-3">
+                    <i class="fa fa-dot-circle-o"></i> Kaydet
+                </button>
+                <button type="reset" class="btn btn-danger btn-md" onclick="temizleForm()">
+                    <i class="fa fa-ban"></i> Sıfırla
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
+<script>
+    // Görsel önizleme özelliği
+    document.getElementById('Gorseller').addEventListener('change', function(e) {
+        var files = e.target.files;
+        var preview = document.getElementById('gorsel-preview');
+
+        if (preview) {
+            preview.remove();
+        }
+
+        if (files.length > 0) {
+            var previewDiv = document.createElement('div');
+            previewDiv.id = 'gorsel-preview';
+            previewDiv.className = 'mt-2';
+            previewDiv.innerHTML = '<small class="text-muted">' + files.length + ' dosya seçildi:</small>';
+
+            for (var i = 0; i < Math.min(files.length, 5); i++) {
+                var fileName = document.createElement('div');
+                fileName.className = 'text-muted small';
+                fileName.textContent = '• ' + files[i].name;
+                previewDiv.appendChild(fileName);
+            }
+
+            if (files.length > 5) {
+                var moreFiles = document.createElement('div');
+                moreFiles.className = 'text-muted small';
+                moreFiles.textContent = '... ve ' + (files.length - 5) + ' dosya daha';
+                previewDiv.appendChild(moreFiles);
+            }
+
+            this.parentNode.appendChild(previewDiv);
+        }
+    });
+
+    // Sıfırla butonu fonksiyonu
+    function temizleForm() {
+        // Dinamik kategori içeriklerini temizle
+        temizleDinamikIcerik();
+
+        // Görsel önizlemesini temizle
+        var preview = document.getElementById('gorsel-preview');
+        if (preview) {
+            preview.remove();
+        }
+    }
+</script>
