@@ -1,6 +1,7 @@
-﻿using eticaret.Models;
+﻿using eticaret.Modeller;
+using eticaret.Models;
 using Microsoft.AspNetCore.Mvc;
-using eticaret.Modeller;
+using Microsoft.EntityFrameworkCore;
 
 namespace eticaret.Controllers
 {
@@ -59,69 +60,31 @@ namespace eticaret.Controllers
 
             try
             {
-                // Önce AltKategoris ile join dene
-                var urunlerAltKategori = (from u in _db.Urunlers
-                                          join a in _db.AltKategoris on u.KategoriId equals a.Id
-                                          select new UrunListeView
-                                          {
-                                              Id = u.Id,
-                                              UrunAdi = u.UrunAdi,
-                                              Stok = u.Stok,
-                                              KategoriId = u.KategoriId,
-                                              KategoriAdi = a.KategoriAdi,
-                                              Alis = u.Alis,
-                                              Satis = u.Satis,
-                                              IndirimliFiyat = u.IndirimliFiyat,
-                                              Aciklama = u.Aciklama
-                                          }).ToList();
+                // Tüm ürünleri tek seferde çek ve kategori bilgilerini left join ile al
+                var urunler = (from u in _db.Urunlers
+                               select new UrunListeView
+                               {
+                                   Id = u.Id,
+                                   UrunAdi = u.UrunAdi,
+                                   Stok = u.Stok,
+                                   KategoriId = u.KategoriId,
+                                   // Önce AltKategori'den bak, yoksa AnaKategori'den al
+                                   KategoriAdi = _db.AltKategoris
+                                                   .Where(alt => alt.Id == u.KategoriId)
+                                                   .Select(alt => alt.KategoriAdi)
+                                                   .FirstOrDefault()
+                                               ?? _db.AnaKategoris
+                                                   .Where(ana => ana.Id == u.KategoriId)
+                                                   .Select(ana => ana.KategoriAdi)
+                                                   .FirstOrDefault()
+                                               ?? "Kategori Bulunamadı",
+                                   Alis = u.Alis,
+                                   Satis = u.Satis,
+                                   IndirimliFiyat = u.IndirimliFiyat,
+                                   Aciklama = u.Aciklama
+                               }).ToList();
 
-                // Eğer AltKategoris'ten sonuç gelmezse, AnaKategoris'ten dene
-                if (!urunlerAltKategori.Any())
-                {
-                    var urunlerAnaKategori = (from u in _db.Urunlers
-                                              join ak in _db.AnaKategoris on u.KategoriId equals ak.Id
-                                              select new UrunListeView
-                                              {
-                                                  Id = u.Id,
-                                                  UrunAdi = u.UrunAdi,
-                                                  Stok = u.Stok,
-                                                  KategoriId = u.KategoriId,
-                                                  KategoriAdi = ak.KategoriAdi,
-                                                  Alis = u.Alis,
-                                                  Satis = u.Satis,
-                                                  IndirimliFiyat = u.IndirimliFiyat,
-                                                  Aciklama = u.Aciklama
-                                              }).ToList();
-
-                    if (urunlerAnaKategori.Any())
-                    {
-                        return View(urunlerAnaKategori);
-                    }
-                }
-                else
-                {
-                    return View(urunlerAltKategori);
-                }
-
-                // Her iki durumda da sonuç yoksa, left join ile tüm ürünleri getir
-                var tumUrunler = (from u in _db.Urunlers
-                                  from ak in _db.AnaKategoris.Where(x => x.Id == u.KategoriId).DefaultIfEmpty()
-                                  from alt in _db.AltKategoris.Where(x => x.Id == u.KategoriId).DefaultIfEmpty()
-                                  select new UrunListeView
-                                  {
-                                      Id = u.Id,
-                                      UrunAdi = u.UrunAdi,
-                                      Stok = u.Stok,
-                                      KategoriId = u.KategoriId,
-                                      KategoriAdi = alt != null ? alt.KategoriAdi :
-                                                   (ak != null ? ak.KategoriAdi : "Kategori Bulunamadı"),
-                                      Alis = u.Alis,
-                                      Satis = u.Satis,
-                                      IndirimliFiyat = u.IndirimliFiyat,
-                                      Aciklama = u.Aciklama
-                                  }).ToList();
-
-                return View(tumUrunler);
+                return View(urunler);
             }
             catch (Exception ex)
             {
@@ -148,8 +111,8 @@ namespace eticaret.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UrunEkle(string UrunAdi, string StokAdeti, string Aciklama,
-            string AlisFiyati, string SatisFiyati, string IndirimliFiyat, int Kategori, int Vergi,
-            List<IFormFile> Gorseller)
+     string AlisFiyati, string SatisFiyati, string IndirimliFiyat, int Kategori, int Vergi,
+     List<IFormFile> Gorseller)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
@@ -159,7 +122,6 @@ namespace eticaret.Controllers
 
             try
             {
-                // Validation
                 if (string.IsNullOrEmpty(UrunAdi))
                 {
                     ViewBag.ErrorMessage = "Ürün adı zorunludur!";
@@ -172,45 +134,43 @@ namespace eticaret.Controllers
                     return await UrunEklePageReturn();
                 }
 
-                // Parse decimal values - boş değerler 0 olarak ayarlanır
-                decimal alis = 0;
-                decimal satis = 0;
-                decimal indirimli = 0;
+                // Kategori ID'sinin geçerli olup olmadığını kontrol et
+                bool kategoriMevcut = await _db.AnaKategoris.AnyAsync(x => x.Id == Kategori) ||
+                                     await _db.AltKategoris.AnyAsync(x => x.Id == Kategori);
+
+                if (!kategoriMevcut)
+                {
+                    ViewBag.ErrorMessage = "Geçersiz kategori seçimi!";
+                    return await UrunEklePageReturn();
+                }
+
+                decimal alis = 0, satis = 0, indirimli = 0;
                 int stok = 0;
 
                 if (!string.IsNullOrEmpty(AlisFiyati))
                     decimal.TryParse(AlisFiyati.Replace(".", ","), out alis);
-
                 if (!string.IsNullOrEmpty(SatisFiyati))
                     decimal.TryParse(SatisFiyati.Replace(".", ","), out satis);
-
                 if (!string.IsNullOrEmpty(IndirimliFiyat))
                     decimal.TryParse(IndirimliFiyat.Replace(".", ","), out indirimli);
-
                 if (!string.IsNullOrEmpty(StokAdeti))
                     int.TryParse(StokAdeti, out stok);
 
-                // Ürün kaydı oluştur
                 var yeniUrun = new Urunler
                 {
                     UrunAdi = UrunAdi.Trim(),
                     Stok = stok,
-                    KategoriId = Kategori,
+                    KategoriId = Kategori, // Bu artık doğru ID'yi içeriyor
                     Alis = alis,
                     Satis = satis,
                     IndirimliFiyat = indirimli,
                     Aciklama = string.IsNullOrEmpty(Aciklama) ? "" : Aciklama.Trim(),
                     VergiId = Vergi,
-                   
                 };
 
                 _db.Urunlers.Add(yeniUrun);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
 
-                // Debug: Eklenen ürünü konsola yazdır
-                Console.WriteLine($"Eklenen Ürün ID: {yeniUrun.Id}, Adı: {yeniUrun.UrunAdi}, KategoriId: {yeniUrun.KategoriId}");
-
-                // Görsel işlemleri
                 if (Gorseller != null && Gorseller.Count > 0)
                 {
                     await GorselleriKaydet(yeniUrun.Id, Gorseller);
@@ -221,12 +181,10 @@ namespace eticaret.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ürün ekleme hatası: {ex.Message}");
                 ViewBag.ErrorMessage = $"Ürün eklenirken hata oluştu: {ex.Message}";
                 return await UrunEklePageReturn();
             }
         }
-
         private async Task<IActionResult> UrunEklePageReturn()
         {
             var veriler = new UrunKayit

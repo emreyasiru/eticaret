@@ -91,15 +91,23 @@
                         }
                     </select>
 
+                    <!-- Gizli input alanı - gerçek kategori ID'si buraya yazılacak -->
+                    <input type="hidden" name="GercekKategori" id="gercekKategori" value="">
+
                     <script>
                         function secim() {
                             var ekle = document.getElementById("kategori").value;
                             var alan = document.getElementById("ekleme");
+                            var gercekKategoriInput = document.getElementById("gercekKategori");
+
+                            // Ana kategori seçildiğinde gizli input'u güncelle
+                            gercekKategoriInput.value = ekle;
 
                             // Önceki dinamik içerikleri temizle
                             temizleDinamikIcerik();
 
                             if (!ekle || ekle === "") {
+                                gercekKategoriInput.value = "";
                                 return;
                             }
 
@@ -120,6 +128,12 @@
                             var ekle = selectElement.value;
                             var alan = document.getElementById("ekleme");
                             var mevcutSeviye = parseInt(selectElement.getAttribute('data-seviye'));
+                            var gercekKategoriInput = document.getElementById("gercekKategori");
+
+                            // Alt kategori seçildiğinde gizli input'u güncelle
+                            if (ekle && ekle !== "") {
+                                gercekKategoriInput.value = ekle;
+                            }
 
                             // Bu seviyeden sonraki tüm içerikleri temizle
                             temizleSonrakiSeviyeler(mevcutSeviye);
@@ -156,7 +170,6 @@
                             sonrakiElementler.forEach(function(element) {
                                 var elementSeviye = parseInt(element.getAttribute('data-seviye'));
                                 if (elementSeviye > mevcutSeviye) {
-                                    // Bu select'ten sonraki alert'i de bul ve sil
                                     var sonrakiAlert = element.nextElementSibling;
                                     if (sonrakiAlert && sonrakiAlert.classList.contains('secilen-kategori')) {
                                         sonrakiAlert.remove();
@@ -165,7 +178,6 @@
                                 }
                             });
 
-                            // Son seçilen kategori alert'ini de temizle eğer yeni seçim yapılıyorsa
                             var alerts = alan.querySelectorAll('.secilen-kategori');
                             alerts.forEach(function(alert, index) {
                                 if (index >= mevcutSeviye - 1) {
@@ -174,33 +186,24 @@
                             });
                         }
 
-                        // Form submit edilmeden önce doğru kategori ID'sini gönder
+                        // Form submit edilirken kategori ID'sini doğru şekilde ayarla
                         document.querySelector('form').addEventListener('submit', function(e) {
+                            var gercekKategoriInput = document.getElementById("gercekKategori");
                             var kategoriSelect = document.getElementById("kategori");
 
-                            // Dinamik olarak eklenen son select'i bul
-                            var dinamikSelectler = document.querySelectorAll('select[data-seviye]');
-                            if (dinamikSelectler.length > 0) {
-                                // En son seviyedeki dolu select'i bul
-                                var sonSelect = null;
-                                for (var i = dinamikSelectler.length - 1; i >= 0; i--) {
-                                    if (dinamikSelectler[i].value && dinamikSelectler[i].value !== "") {
-                                        sonSelect = dinamikSelectler[i];
-                                        break;
-                                    }
-                                }
-
-                                if (sonSelect) {
-                                    // Ana select'in name'ini kaldır ve değerini son select'ten al
-                                    kategoriSelect.name = "";
-                                    sonSelect.name = "Kategori";
-                                }
+                            // Gizli input'tan değeri al ve ana select'e ata
+                            if (gercekKategoriInput.value) {
+                                kategoriSelect.value = gercekKategoriInput.value;
+                            } else {
+                                // Hiçbir kategori seçilmemişse hata ver
+                                alert('Lütfen bir kategori seçiniz!');
+                                e.preventDefault();
+                                return false;
                             }
                         });
                     </script>
                 </div>
             </div>
-
             <div class="row mb-3">
                 <div class="col col-md-3">
                     <label for="Vergi" class="form-control-label">Vergi Dilimi</label>
