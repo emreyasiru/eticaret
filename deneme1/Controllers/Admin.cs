@@ -110,9 +110,10 @@ namespace eticaret.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> UrunEkle(string UrunAdi, string StokAdeti, string Aciklama,
-     string AlisFiyati, string SatisFiyati, string IndirimliFiyat, int Kategori, int Vergi,
-     List<IFormFile> Gorseller)
+    string AlisFiyati, string SatisFiyati, string IndirimliFiyat, int GercekKategori, int Vergi,
+    List<IFormFile> Gorseller)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
@@ -128,15 +129,15 @@ namespace eticaret.Controllers
                     return await UrunEklePageReturn();
                 }
 
-                if (Kategori == 0)
+                if (GercekKategori == 0)
                 {
                     ViewBag.ErrorMessage = "Kategori seçimi zorunludur!";
                     return await UrunEklePageReturn();
                 }
 
                 // Kategori ID'sinin geçerli olup olmadığını kontrol et
-                bool kategoriMevcut = await _db.AnaKategoris.AnyAsync(x => x.Id == Kategori) ||
-                                     await _db.AltKategoris.AnyAsync(x => x.Id == Kategori);
+                bool kategoriMevcut = await _db.AnaKategoris.AnyAsync(x => x.Id == GercekKategori) ||
+                                     await _db.AltKategoris.AnyAsync(x => x.Id == GercekKategori);
 
                 if (!kategoriMevcut)
                 {
@@ -160,7 +161,7 @@ namespace eticaret.Controllers
                 {
                     UrunAdi = UrunAdi.Trim(),
                     Stok = stok,
-                    KategoriId = Kategori, // Bu artık doğru ID'yi içeriyor
+                    KategoriId = GercekKategori, // Artık doğru kategori ID'si kullanılıyor
                     Alis = alis,
                     Satis = satis,
                     IndirimliFiyat = indirimli,
@@ -387,6 +388,62 @@ namespace eticaret.Controllers
             {
                 ViewBag.ErrorMessage = "kullanıcı adı veya şifre yanlış";
                 return View();
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> UrunSil(int id)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "Oturum süresi dolmuş. Lütfen tekrar giriş yapın." });
+            }
+
+            try
+            {
+                // Ürünü bul
+                var urun = await _db.Urunlers.FirstOrDefaultAsync(x => x.Id == id);
+                if (urun == null)
+                {
+                    return Json(new { success = false, message = "Ürün bulunamadı." });
+                }
+
+                // Ürüne ait görselleri bul
+                var urunGorselleri = _db.UrunGorsels.Where(x => x.Urunid == id).ToList();
+
+                // Görselleri dosya sisteminden sil
+                if (urunGorselleri.Any())
+                {
+                    string uploadsPath = Path.Combine(_env.WebRootPath, "uploads", "urunler", id.ToString());
+
+                    foreach (var gorsel in urunGorselleri)
+                    {
+                        string dosyaYolu = Path.Combine(uploadsPath, gorsel.Ad);
+                        if (System.IO.File.Exists(dosyaYolu))
+                        {
+                            System.IO.File.Delete(dosyaYolu);
+                        }
+                    }
+
+                    // Klasörü sil (boşsa)
+                    if (Directory.Exists(uploadsPath) && !Directory.EnumerateFileSystemEntries(uploadsPath).Any())
+                    {
+                        Directory.Delete(uploadsPath);
+                    }
+
+                    // Veritabanından görselleri sil
+                    _db.UrunGorsels.RemoveRange(urunGorselleri);
+                }
+
+                // Ürünü veritabanından sil
+                _db.Urunlers.Remove(urun);
+                await _db.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Ürün başarıyla silindi." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Ürün silinirken hata oluştu: {ex.Message}" });
             }
         }
 

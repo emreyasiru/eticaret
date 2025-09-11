@@ -91,23 +91,27 @@
                         }
                     </select>
 
-                    <!-- Gizli input alanı - gerçek kategori ID'si buraya yazılacak -->
+                    <!-- Bu input artık form ile gönderilecek gerçek değeri tutar -->
                     <input type="hidden" name="GercekKategori" id="gercekKategori" value="">
 
                     <script>
+                        // Global değişken - en son seçilen kategori ID'sini tutar
+                        let enSonSecilenKategori = "";
+
                         function secim() {
                             var ekle = document.getElementById("kategori").value;
                             var alan = document.getElementById("ekleme");
-                            var gercekKategoriInput = document.getElementById("gercekKategori");
 
-                            // Ana kategori seçildiğinde gizli input'u güncelle
-                            gercekKategoriInput.value = ekle;
+                            // Ana kategori seçildiğinde global değişkeni ve hidden input'u güncelle
+                            enSonSecilenKategori = ekle;
+                            document.getElementById("gercekKategori").value = ekle;
 
                             // Önceki dinamik içerikleri temizle
                             temizleDinamikIcerik();
 
                             if (!ekle || ekle === "") {
-                                gercekKategoriInput.value = "";
+                                enSonSecilenKategori = "";
+                                document.getElementById("gercekKategori").value = "";
                                 return;
                             }
 
@@ -128,11 +132,11 @@
                             var ekle = selectElement.value;
                             var alan = document.getElementById("ekleme");
                             var mevcutSeviye = parseInt(selectElement.getAttribute('data-seviye'));
-                            var gercekKategoriInput = document.getElementById("gercekKategori");
 
-                            // Alt kategori seçildiğinde gizli input'u güncelle
+                            // Alt kategori seçildiğinde global değişkeni ve hidden input'u güncelle
                             if (ekle && ekle !== "") {
-                                gercekKategoriInput.value = ekle;
+                                enSonSecilenKategori = ekle;
+                                document.getElementById("gercekKategori").value = ekle;
                             }
 
                             // Bu seviyeden sonraki tüm içerikleri temizle
@@ -186,20 +190,19 @@
                             });
                         }
 
-                        // Form submit edilirken kategori ID'sini doğru şekilde ayarla
+                        // Form submit edilirken kontrol
                         document.querySelector('form').addEventListener('submit', function(e) {
                             var gercekKategoriInput = document.getElementById("gercekKategori");
-                            var kategoriSelect = document.getElementById("kategori");
 
-                            // Gizli input'tan değeri al ve ana select'e ata
-                            if (gercekKategoriInput.value) {
-                                kategoriSelect.value = gercekKategoriInput.value;
-                            } else {
-                                // Hiçbir kategori seçilmemişse hata ver
+                            // Hiçbir kategori seçilmemişse hata ver
+                            if (!gercekKategoriInput.value || gercekKategoriInput.value === "") {
                                 alert('Lütfen bir kategori seçiniz!');
                                 e.preventDefault();
                                 return false;
                             }
+
+                            console.log("Gönderilecek kategori ID:", gercekKategoriInput.value);
+                            return true;
                         });
                     </script>
                 </div>
