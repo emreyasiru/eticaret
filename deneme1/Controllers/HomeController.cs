@@ -1,21 +1,32 @@
-using System.Diagnostics;
 using deneme1.Models;
+using eticaret.Models;
+using eticaret.Modeller;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using NuGet.Versioning;
 
 namespace deneme1.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly EticaretContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, EticaretContext db)
         {
+            _db = db;
             _logger = logger;
         }
 
+       
+
         public IActionResult Index()
         {
-            return View();
+            var urunler = new UrunListesi
+            {
+                Kategorilerim = _db.AnaKategoris.ToList(),
+            };
+            return View(urunler);
         }
 
         public IActionResult Iletisim()
