@@ -25,6 +25,8 @@ namespace deneme1.Controllers
             var urunler = new UrunListesi
             {
                 Kategorilerim = _db.AnaKategoris.ToList(),
+                Urunlerim=_db.Urunlers.ToList(),
+                UrunGorsellerim = _db.UrunGorsels.Where(u => u.Baslangic == true).ToList(),
             };
             return View(urunler);
         }
