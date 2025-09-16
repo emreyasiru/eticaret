@@ -26,7 +26,7 @@ namespace deneme1.Controllers
             {
                 Kategorilerim = _db.AnaKategoris.ToList(),
                 Urunlerim=_db.Urunlers.ToList(),
-                UrunGorsellerim = _db.UrunGorsels.Where(u => u.Baslangic == true).ToList(),
+                UrunGorsellerim = _db.UrunGorsels.ToList(),
             };
             return View(urunler);
         }
