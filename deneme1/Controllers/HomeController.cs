@@ -1,9 +1,11 @@
 using deneme1.Models;
-using eticaret.Models;
 using eticaret.Modeller;
+using eticaret.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using NuGet.Versioning;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Mail;
 
 namespace deneme1.Controllers
 {
@@ -40,9 +42,82 @@ namespace deneme1.Controllers
         {
             return View();
         }
+        [HttpGet]
         public IActionResult Uye()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult Uye(string isim,string mail,string sifre)
+        {
+            var dogrulamakodu=new Random().Next(1000,9999).ToString();
+            var misafir = new Misafir
+            {
+                Isim = isim,
+                Mail = mail,
+                Sifre = sifre,
+                Kod = dogrulamakodu,
+                Durum= false
+            };
+            _db.Misafirs.Add(misafir);
+            _db.SaveChanges();
+            // Mail gönderme
+            try
+            {
+                // Mail ayarlarý
+                string gondericiMail = "emreyasiru@gmail.com";
+                string gondericiSifre = "rcwv waeh xnum hpjj"; // Gmail uygulama þifresi
+
+                // SMTP client oluþtur
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential(gondericiMail, gondericiSifre);
+                smtp.EnableSsl = true;
+
+                // Mail mesajý oluþtur
+                MailMessage mailMessage = new MailMessage();
+                mailMessage.From = new MailAddress(gondericiMail, "E Ticaret");
+                mailMessage.To.Add(mail);
+                mailMessage.Subject = "Hesap Doðrulama Kodu";
+                mailMessage.Body = $"Merhaba {isim},\n\nHesabýnýzý doðrulamak için kod: {dogrulamakodu}\n\nÝyi günler!";
+                mailMessage.IsBodyHtml = false;
+
+                // Mail gönder
+                smtp.Send(mailMessage);
+
+                // Baþarýlý mesaj
+                TempData["Mesaj"] = "Doðrulama kodu mail adresinize gönderildi.";
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda
+                TempData["Hata"] = "Mail gönderilirken hata oluþtu: " + ex.Message;
+            }
+
+            return RedirectToAction("Dogrula", "Home");
+        }
+        [HttpGet]
+        public IActionResult Dogrula()
+        {
+          
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Dogrula(string kod)
+        {
+            var onay = _db.Misafirs.FirstOrDefault(x => x.Kod == kod);
+            if (onay != null)
+            {
+                onay.Durum = true;
+                _db.SaveChanges();
+                TempData["Mesaj"] = "Hesabýnýz baþarýyla doðrulandý. Giriþ yapabilirsiniz.";
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                TempData["Hata"] = "Geçersiz doðrulama kodu. Lütfen tekrar deneyin.";
+                return View();
+            }
+          
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -23,6 +23,10 @@ public partial class EticaretContext : DbContext
 
     public virtual DbSet<KullaniciBilgileri> KullaniciBilgileris { get; set; }
 
+    public virtual DbSet<Misafir> Misafirs { get; set; }
+
+    public virtual DbSet<MisafirDetay> MisafirDetays { get; set; }
+
     public virtual DbSet<UrunDetay> UrunDetays { get; set; }
 
     public virtual DbSet<UrunGorsel> UrunGorsels { get; set; }
@@ -99,6 +103,53 @@ public partial class EticaretContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("telefon");
             entity.Property(e => e.Yetki).HasColumnName("yetki");
+        });
+
+        modelBuilder.Entity<Misafir>(entity =>
+        {
+            entity.ToTable("Misafir");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Durum).HasColumnName("durum");
+            entity.Property(e => e.Isim)
+                .HasMaxLength(150)
+                .IsUnicode(false)
+                .HasColumnName("isim");
+            entity.Property(e => e.Kod)
+                .HasMaxLength(4)
+                .IsFixedLength()
+                .HasColumnName("kod");
+            entity.Property(e => e.Mail)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("mail");
+            entity.Property(e => e.Sifre)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("sifre");
+        });
+
+        modelBuilder.Entity<MisafirDetay>(entity =>
+        {
+            entity.ToTable("Misafir_Detay");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Adres)
+                .HasColumnType("text")
+                .HasColumnName("adres");
+            entity.Property(e => e.Cinsiyet)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("cinsiyet");
+            entity.Property(e => e.Il).HasColumnName("il");
+            entity.Property(e => e.Ilce).HasColumnName("ilce");
+            entity.Property(e => e.Musteriid).HasColumnName("musteriid");
+            entity.Property(e => e.Tc)
+                .HasColumnType("text")
+                .HasColumnName("tc");
+            entity.Property(e => e.Telefon)
+                .HasColumnType("text")
+                .HasColumnName("telefon");
         });
 
         modelBuilder.Entity<UrunDetay>(entity =>

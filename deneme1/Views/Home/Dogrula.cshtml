@@ -225,8 +225,9 @@
 	.container.right-panel-active .overlay-right {
 		transform: translateX(20%);
 	}
-	.bosluk{
-		margin-top:10px
+
+	.bosluk {
+		margin-top: 10px
 	}
 
 	.social-container {
@@ -272,44 +273,16 @@
 
 
 <div class="container" id="container">
-	<div class="form-container sign-up-container">
-		<form asp-action="Uye" asp-controller="Home" method="post">
-			<h1>Create Account</h1>
-			<div class="social-container">
-				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-			</div>
-			<span>or use your email for registration</span>
-			<input type="text" placeholder="Name" name="isim" />
-			<input type="email" placeholder="Email" name="mail" />
-			<input type="password" placeholder="Password" name="sifre" />
+	<div class="form-container sign-in-container">
+		<form asp-action="Dogrula" asp-controller="Home" method="post">
+			<input type="text" placeholder="dogrulama kodu" name="kod">
 			<button class="bosluk">Kayıt ol</button>
 		</form>
 	</div>
-	<div class="form-container sign-in-container">
-		<form action="#">
-			<h1>Sign in</h1>
-			<div class="social-container">
-				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-			</div>
-			<span>or use your account</span>
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Password" />
-			<a href="#">Şifreni mi unuttun?</a>
-			<button>Giriş Yap</button>
-		</form>
-	</div>
+	
 	<div class="overlay-container">
 		<div class="overlay">
-			<div class="overlay-panel overlay-left">
-				<h1>Welcome Back!</h1>
-				<p>To keep connected with us please login with your personal info</p>
-				<button class="ghost" id="signIn">Giriş Yap</button>
-				<a asp-action="Index" asp-controller="Home" class="ghost bosluk">Ana Sayfaya Dön</a>
-			</div>
+			
 			<div class="overlay-panel overlay-right">
 				<h1>Hello, Friend!</h1>
 				<p>Enter your personal details and start journey with us</p>

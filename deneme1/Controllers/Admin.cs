@@ -112,8 +112,8 @@ namespace eticaret.Controllers
         [HttpPost]
         [HttpPost]
         public async Task<IActionResult> UrunEkle(string UrunAdi, string StokAdeti, string Aciklama,
-    string AlisFiyati, string SatisFiyati, string IndirimliFiyat, int GercekKategori, int Vergi,
-    List<IFormFile> Gorseller)
+        string AlisFiyati, string SatisFiyati, string IndirimliFiyat, int GercekKategori, int Vergi,
+        List<IFormFile> Gorseller)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
