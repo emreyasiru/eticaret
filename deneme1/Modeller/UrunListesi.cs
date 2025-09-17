@@ -7,5 +7,6 @@ namespace eticaret.Modeller
         public List<AnaKategori> Kategorilerim { get; set; }
         public List<Urunler> Urunlerim { get; set; }
         public List<UrunGorsel>UrunGorsellerim { get; set; }
+        public List<AltKategori>Altkategorilerim { get; set; }
     }
 }

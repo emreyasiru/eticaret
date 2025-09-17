@@ -27,6 +27,7 @@ namespace deneme1.Controllers
                 Kategorilerim = _db.AnaKategoris.ToList(),
                 Urunlerim=_db.Urunlers.ToList(),
                 UrunGorsellerim = _db.UrunGorsels.ToList(),
+                Altkategorilerim=_db.AltKategoris.ToList()
             };
             return View(urunler);
         }
