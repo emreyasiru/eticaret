@@ -110,16 +110,15 @@ namespace deneme1.Controllers
                 onay.Durum = true;
                 _db.SaveChanges();
                 TempData["Mesaj"] = "Hesabýnýz baþarýyla doðrulandý. Giriþ yapabilirsiniz.";
-                return RedirectToAction("Index", "Home");
+                TempData["Basarili"] = "true"; // Baþarýlý doðrulama için flag
+                return View(); // Önce view'ý döndür, JavaScript ile yönlendirme yapacaðýz
             }
             else
             {
-                TempData["Hata"] = "Geçersiz doðrulama kodu. Lütfen tekrar deneyin.";
+                TempData["Hata"] = "Hatalý kod girdiniz. Lütfen tekrar deneyin.";
                 return View();
             }
-          
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
