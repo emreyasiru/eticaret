@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <html>
 <head>
@@ -54,10 +55,21 @@
             <a href="./index.html"><img src="img/logo.png" alt=""></a>
         </div>
         <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__auth">
-            <a asp-action="Uye" asp-controller="Home">Login</a>
-            <a asp-action="Uye" asp-controller="Home">Register</a>
-        </div>
+        @if (HttpContextAccessor.HttpContext.Session.GetString("username") != null)
+        {
+            var isim = HttpContextAccessor.HttpContext.Session.GetString("username");
+            <div class="header__right__auth">
+                <a asp-action="Profil" asp-controller="Home">@isim</a>
+                <a asp-action="Cikis" asp-controller="Home"> Logout</a>
+            </div>
+        }
+        else
+        {
+            <div class="header__right__auth">
+                <a asp-action="Uye" asp-controller="Home">Login</a>
+                <a asp-action="Uye" asp-controller="Home">Register</a>
+            </div>
+        }
     </div>
     <!-- Offcanvas Menu End -->
     <!-- Header Section Begin -->
@@ -92,10 +104,20 @@
                 </div>
                 <div class="col-lg-3">
                     <div class="header__right">
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("username") != null)
+                        {
+                            var isim = HttpContextAccessor.HttpContext.Session.GetString("username");
+                            <div class="header__right__auth">
+                                <a asp-action="Profil" asp-controller="Home">@isim</a>
+                                <a asp-action="Cikis" asp-controller="Home">Logout</a>
+                            </div>
+                        }
+                        else{
                         <div class="header__right__auth">
                             <a asp-action="Uye" asp-controller="Home">Login</a>
                             <a asp-action="Uye" asp-controller="Home">Register</a>
                         </div>
+                        }
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>
                             <li>

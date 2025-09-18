@@ -42,6 +42,29 @@ namespace deneme1.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Giriss(string mail, string sifre)
+        {
+            var kullanici = _db.Misafirs.FirstOrDefault(x => x.Mail == mail && x.Sifre == sifre &&x.Durum==true);
+            if (kullanici != null)
+            {
+               
+                    HttpContext.Session.SetInt32("UserId", kullanici.Id);
+                    HttpContext.Session.SetString("username", kullanici.Isim);
+                    return RedirectToAction("Index", "Home");
+               
+            }
+            else
+            {
+                TempData["Hata"] = "Geçersiz mail veya þifre.";
+                return RedirectToAction("Uye", "Home");
+            }
+        }
+        public IActionResult Cikis()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
         [HttpGet]
         public IActionResult Uye()
         {
@@ -109,6 +132,9 @@ namespace deneme1.Controllers
             {
                 onay.Durum = true;
                 _db.SaveChanges();
+                HttpContext.Session.SetInt32("UserId", onay.Id);
+                HttpContext.Session.SetString("username", onay.Isim);
+               
                 TempData["Mesaj"] = "Hesabýnýz baþarýyla doðrulandý. Giriþ yapabilirsiniz.";
                 TempData["Basarili"] = "true"; // Baþarýlý doðrulama için flag
                 return View(); // Önce view'ý döndür, JavaScript ile yönlendirme yapacaðýz
