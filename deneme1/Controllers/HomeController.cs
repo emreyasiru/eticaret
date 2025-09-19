@@ -38,9 +38,19 @@ namespace deneme1.Controllers
         {
             return View();
         }
+        [HttpGet]
         public IActionResult magaza()
         {
-            return View();
+            var urunler = new UrunListesi
+            {
+                Kategorilerim = _db.AnaKategoris.ToList(),
+                Urunlerim = _db.Urunlers.ToList(),
+                UrunGorsellerim = _db.UrunGorsels.ToList(),
+                Altkategorilerim = _db.AltKategoris.ToList(),
+                UrunDetaylarým = _db.UrunDetays.ToList()
+            };
+
+            return View(urunler);
         }
         [HttpPost]
         public IActionResult Giriss(string mail, string sifre)
