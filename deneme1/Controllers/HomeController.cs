@@ -39,19 +39,52 @@ namespace deneme1.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult magaza()
+        public IActionResult magaza( int? id,string? min,string? max)
         {
-            var urunler = new UrunListesi
+            if (id != null)
             {
-                Kategorilerim = _db.AnaKategoris.ToList(),
-                Urunlerim = _db.Urunlers.ToList(),
-                UrunGorsellerim = _db.UrunGorsels.ToList(),
-                Altkategorilerim = _db.AltKategoris.ToList(),
-                UrunDetaylarým = _db.UrunDetays.ToList()
-            };
+                var urunler = new UrunListesi
+                {
+                    Kategorilerim = _db.AnaKategoris.ToList(),
+                    Urunlerim = _db.Urunlers.Where(x => x.KategoriId == id).ToList(),
+                    UrunGorsellerim = _db.UrunGorsels.ToList(),
+                    Altkategorilerim = _db.AltKategoris.ToList(),
+                    UrunDetaylarým = _db.UrunDetays.ToList()
+                };
+                return View(urunler);
+            }
+            if (min != null)
+            {
+                var decimalMin = Convert.ToDecimal(min.Replace("$", ""));
+                var decimalMax = Convert.ToDecimal(max.Replace("$", ""));
 
-            return View(urunler);
+                var urunler = new UrunListesi
+                {
+                    Kategorilerim = _db.AnaKategoris.ToList(),
+                    Urunlerim = _db.Urunlers.Where(x => x.Satis >= decimalMin && x.Satis <= decimalMax).ToList(),
+                    UrunGorsellerim = _db.UrunGorsels.ToList(),
+                    Altkategorilerim = _db.AltKategoris.ToList(),
+                    UrunDetaylarým = _db.UrunDetays.ToList()
+                };
+                return View(urunler);
+            }
+            else
+            {
+                var urunler = new UrunListesi
+                {
+                    Kategorilerim = _db.AnaKategoris.ToList(),
+                    Urunlerim = _db.Urunlers.ToList(),
+                    UrunGorsellerim = _db.UrunGorsels.ToList(),
+                    Altkategorilerim = _db.AltKategoris.ToList(),
+                    UrunDetaylarým = _db.UrunDetays.ToList()
+                };
+                return View(urunler);
+            }
+
+            
         }
+
+
         [HttpPost]
         public IActionResult Giriss(string mail, string sifre)
         {

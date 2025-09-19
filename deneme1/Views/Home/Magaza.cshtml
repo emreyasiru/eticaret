@@ -33,6 +33,7 @@
                                 <div class="accordion" id="accordionExample">
                                 @foreach(var ktg in Model.Kategorilerim)
                                 {
+									var altktg = Model.Altkategorilerim.Where(a => a.AnaKategoriId == ktg.Id&& a.UstKategoriId==null).ToList();
                                     <div class="card">
                                         <div class="card-heading ">
                                             <a data-toggle="collapse" data-target="#@ktg.KategoriAdi">@ktg.KategoriAdi</a>
@@ -40,12 +41,10 @@
                                         <div id="@ktg.KategoriAdi" class="collapse show" data-parent="#accordionExample">
                                             <div class="card-body">
                                                 <ul>
-                                                    <li><a href="#">Coats</a></li>
-                                                    <li><a href="#">Jackets</a></li>
-                                                    <li><a href="#">Dresses</a></li>
-                                                    <li><a href="#">Shirts</a></li>
-                                                    <li><a href="#">T-shirts</a></li>
-                                                    <li><a href="#">Jeans</a></li>
+                                                    @foreach (var alt in altktg)
+                                                    {
+                                                        <li><a asp-action="magaza" asp-controller="Home" asp-route-id="@alt.Id">@alt.KategoriAdi</a></li>
+                                                    }                                                                                                   
                                                 </ul>
                                             </div>
                                         </div>
@@ -54,23 +53,25 @@
                                 </div>
                             </div>
                         </div>
+                        <form asp-action="magaza" asp-controller="Home" method="get">
                         <div class="sidebar__filter">
                             <div class="section-title">
                                 <h4>Shop by price</h4>
                             </div>
                             <div class="filter-range-wrap">
                                 <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-                                data-min="33" data-max="99"></div>
+                                data-min="10" data-max="999"></div>
                                 <div class="range-slider">
                                     <div class="price-input">
                                         <p>Price:</p>
-                                        <input type="text" id="minamount">
-                                        <input type="text" id="maxamount">
+                                        <input type="text" name="min" id="minamount">
+                                        <input type="text" name="max" id="maxamount">
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">Filter</a>
+                            <button class="btn btn-danger" type="submit">Filtrele</button>
                         </div>
+                        </form>
                         <div class="sidebar__sizes">
                             <div class="section-title">
                                 <h4>Shop by size</h4>
